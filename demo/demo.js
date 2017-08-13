@@ -12,7 +12,7 @@ xxx.get()
      * flag: 是否来自缓存，用于判断
      */
     .done(function (res, flag) {
-        // 有缓存应带调用两遍
+        // 有缓存应该调用两遍
         console.log(res)
     })
     .fail(function (res) {
