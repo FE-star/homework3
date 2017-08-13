@@ -46,3 +46,17 @@ xxx.get({ maxAge: 10000 })
     .done(function (res, flag) {
         console.log(res)
     })
+
+/**
+ * fail逻辑
+ */
+// 相当于清除登陆态，所以后台应当返回retcode=1
+document.cookie = ''
+
+xxx.get()
+    .fail(function (res) {
+        res.retcode // 值为1，调用1次
+        // 因为懒得每次fail都要看看是否登陆台丢失，
+        // 所以应当在一个共用的地方处理掉登陆态
+        // 比如前置一个插件机制，让插件机制发现登陆态丢失了就呼起登录框
+    })
