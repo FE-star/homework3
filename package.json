@@ -1,0 +1,27 @@
+{
+  "name": "core-db",
+  "version": "1.0.0",
+  "description": "> 这是第一个团队作业，希望大家能以团队的方式提交答案，thx",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FE-star/homework3.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/FE-star/homework3/issues"
+  },
+  "homepage": "https://github.com/FE-star/homework3#readme",
+  "devDependencies": {
+    "karma": "^1.7.0",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-mocha": "^1.3.0",
+    "karma-webpack": "^2.0.4",
+    "mocha": "^3.5.0",
+    "webpack": "^3.5.5"
+  }
+}
