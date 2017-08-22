@@ -30,7 +30,10 @@ describe('request', function() {
       assert.deepEqual(req3.options, { url: 'http://url.com' })
       assert.deepEqual(req4.options, { url: 'http://url.com' })
       assert.deepEqual(req5.options, { url: 'http://url.com', type: 'POST' })
-      
     })
+  })
+
+  describe('可以定制请求', function() {
+
   })
 })
