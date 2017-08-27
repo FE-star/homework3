@@ -1,29 +1,29 @@
-const request = require('../lib/request')
+const Request = require('../lib/request')
 const assert = require('assert')
+const express = require('express')
 
-describe('request', function() {
-  describe('constructor', function() {
-    it('可以设置 url 和 options', function() {
-      const req = new request('http://url.com', { type: 'GET' })
+describe('Request', function () {
+  describe('constructor', function () {
+    it('可以设置 url 和 options', function () {
+      const req = new Request('http://url.com', { type: 'GET' })
       assert.deepEqual(req.options, { url: 'http://url.com', type: 'GET' })
     })
 
-    it('url 必须是字符串', function() {
-      const req1 = new request()
-      const req2 = new request({})
-      const req3 = new request(123)
-      
+    it('url 必须是字符串', function () {
+      const req1 = new Request()
+      const req2 = new Request({})
+      const req3 = new Request(123)
       assert.deepEqual(req1.options, {})
       assert.deepEqual(req2.options, {})
       assert.deepEqual(req3.options, {})
     })
 
-    it('options 必须是对象', function() {
-      const req1 = new request('http://url.com')
-      const req2 = new request()
-      const req3 = new request('http://url.com', 'aa')
-      const req4 = new request('http://url.com', 11)
-      const req5 = new request('http://url.com', { type: 'POST' })
+    it('options 必须是对象', function () {
+      const req1 = new Request('http://url.com')
+      const req2 = new Request()
+      const req3 = new Request('http://url.com', 'aa')
+      const req4 = new Request('http://url.com', 11)
+      const req5 = new Request('http://url.com', { type: 'POST' })
 
       assert.deepEqual(req1.options, { url: 'http://url.com' })
       assert.deepEqual(req2.options, {})
@@ -33,7 +33,38 @@ describe('request', function() {
     })
   })
 
-  describe('可以定制请求', function() {
+  describe('可以定制请求', function () {
+    describe('GET 请求', function () {
+      it('url 不能为空', function () {
+        const req1 = new Request()
+        const req2 = new Request('abc')
 
+        assert.throws(req1.get, Error, 'Error thrown')
+        assert.throws(req2.get, Error, 'Error thronw')
+      })
+
+      describe('可以发送请求', function () {
+        // before(function (done) {
+        //   const app = express()
+        //   app.get('/', function (req, res, next) {
+        //     console.log('BEFORE req.header')
+        //     res.send('I am ok')
+        //     next()
+        //   })
+
+        //   app.listen(3000)
+        // })
+
+        it('retcode 为 0，正常取得数据', function (done) {
+          const req = new Request('http://127.0.0.1:3000')
+
+          req.get().then(res => {
+            console.log('asdfadsfsdfaf')
+            console.log(res)
+            done()
+          })
+        })
+      })
+    })
   })
 })
