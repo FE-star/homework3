@@ -18,4 +18,9 @@ var request = http.request(options, function (resp) {
   })
 })
 
+request.on('error', (res) => {
+  console.log('on err')
+  console.log(res)
+})
+
 request.end()
