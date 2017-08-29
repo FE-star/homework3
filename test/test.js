@@ -47,31 +47,27 @@ describe('Request', function () {
 
       before(function () {
         app.get('/', function (req, res) {
-          res.send('I am ok')
+          res.json({
+            retcode: 0,
+            msg: 'OK',
+            res: 'this is a test'
+          })
         })
       })
 
       describe('可以自定义 GET 请求', function (done) {
         it('retcode 为 0，请求成功', function (done) {
           class AA extends Request {
-            constructor (options) {
-              super()
-              this.options = options
-              console.log('this.options: ', this.options)
+            constructor (url, options) {
+              super(url, options)
               this.plugin('get', () => {
                 return new Promise((resolve, reject) => {
                   const req = http.request(this.options, function (resp) {
                     resp.on('data', (chunk) => {
-                      console.log(chunk.toString('utf8'))
-                      resolve(chunk.toString('utf8'))
+                      resolve(chunk)
                     })
                   })
-  
-                  req.on('error', (e) => {
-                    console.log(e)
-                    reject(e)
-                  })
-  
+
                   req.end()
                 })
               })
@@ -79,11 +75,14 @@ describe('Request', function () {
           }
 
 
-          // const aa1 = new AA({ url: 'localhost' })
-          const aa2 = new AA({ url: 'localhost', port: 3000 })
-          // aa1.get().then().catch()
-          aa2.get().then(res => {
-            console.log('asdfasfd', res)
+          const aa = new AA('localhost', { port: 3000 })
+          aa.get().then(buf => {
+            const jsonResult = JSON.parse(buf.toString('utf8'))
+            assert.deepEqual(jsonResult, {
+              retcode: 0,
+              msg: 'OK',
+              res: 'this is a test'
+            })
             done()
           })
         })
