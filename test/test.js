@@ -53,7 +53,7 @@ describe('Request', function () {
       //   })
       // })
 
-      describe('可以自定义 GET 请求', function (done) {
+      describe('可以自定义 GET 请求', function () {
         it('retcode 为 0，请求成功', function (done) {
           class AA extends Request {
             constructor (url, options) {
@@ -73,7 +73,6 @@ describe('Request', function () {
             }
           }
 
-
           const aa = new AA('localhost', { path: '/root' })
           aa.get().then(buf => {
             const jsonResult = JSON.parse(buf.toString('utf8'))
@@ -85,6 +84,12 @@ describe('Request', function () {
 
             done()
           })
+        })
+      })
+
+      describe('localStorage 缓存: ', function () {
+        it('1. 默认缓存策略: 如果没缓存，成功请求回调一次，如果有缓存,请求成功缓存应当回调两次，', function (done) {
+
         })
       })
 
