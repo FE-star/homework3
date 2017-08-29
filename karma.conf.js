@@ -69,9 +69,18 @@ module.exports = function(config) {
     },
 
 
+    middleware: ['mock'],
+    plugins: [
+        require('./test/mock/middleware'),
+        require('karma-mocha'),
+        require('karma-webpack'),
+        require('karma-chrome-launcher'),
+    ],
+
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: !!process.env.TRAVIS,
+    // singleRun: !!process.env.TRAVIS,
+    singleRun: true,
 
     // Concurrency level
     // how many browser should be started simultaneous

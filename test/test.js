@@ -1,8 +1,6 @@
 const Request = require('../lib/request')
 const assert = require('assert')
 const http = require('http')
-const server = require('../mock-server').server
-const app = require('../mock-server').app
 
 describe('Request', function () {
   describe('constructor', function () {
@@ -45,15 +43,15 @@ describe('Request', function () {
         assert.throws(req2.get, Error, 'Error thronw')
       })
 
-      before(function () {
-        app.get('/', function (req, res) {
-          res.json({
-            retcode: 0,
-            msg: 'OK',
-            res: 'this is a test'
-          })
-        })
-      })
+      // before(function () {
+      //   app.get('/', function (req, res) {
+      //     res.json({
+      //       retcode: 0,
+      //       msg: 'OK',
+      //       res: 'this is a test'
+      //     })
+      //   })
+      // })
 
       describe('可以自定义 GET 请求', function (done) {
         it('retcode 为 0，请求成功', function (done) {
@@ -64,6 +62,7 @@ describe('Request', function () {
                 return new Promise((resolve, reject) => {
                   const req = http.request(this.options, function (resp) {
                     resp.on('data', (chunk) => {
+                      console.log(chunk.toString('utf8'))
                       resolve(chunk)
                     })
                   })
@@ -75,7 +74,7 @@ describe('Request', function () {
           }
 
 
-          const aa = new AA('localhost', { port: 3000 })
+          const aa = new AA('localhost', { path: '/root' })
           aa.get().then(buf => {
             const jsonResult = JSON.parse(buf.toString('utf8'))
             assert.deepEqual(jsonResult, {
@@ -83,14 +82,15 @@ describe('Request', function () {
               msg: 'OK',
               res: 'this is a test'
             })
+
             done()
           })
         })
       })
 
-      after(function () {
-        server.close()
-      })
+      // after(function () {
+      //   server.close()
+      // })
     })
   })
 })
