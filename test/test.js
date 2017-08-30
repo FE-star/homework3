@@ -62,8 +62,8 @@ describe('Request', function () {
                 return new Promise((resolve, reject) => {
                   const req = http.request(this.options, function (resp) {
                     resp.on('data', (chunk) => {
-                      console.log(chunk.toString('utf8'))
-                      resolve(chunk)
+                      // console.log(chunk.toString('utf8'))
+                      resolve(JSON.parse(chunk.toString('utf8')))
                     })
                   })
 
@@ -74,9 +74,9 @@ describe('Request', function () {
           }
 
           const aa = new AA('localhost', { path: '/root' })
-          aa.get().then(buf => {
-            const jsonResult = JSON.parse(buf.toString('utf8'))
-            assert.deepEqual(jsonResult, {
+          aa.get().then(res => {
+            // const jsonResult = JSON.parse(buf.toString('utf8'))
+            assert.deepEqual(res, {
               retcode: 0,
               msg: 'OK',
               res: 'this is a test'
@@ -89,7 +89,7 @@ describe('Request', function () {
 
       describe('localStorage 缓存: ', function () {
         it('1. 默认缓存策略: 如果没缓存，成功请求回调一次，如果有缓存,请求成功缓存应当回调两次，', function (done) {
-
+          done()
         })
       })
 
