@@ -4,4 +4,4 @@ module.exports = function (req, res) {
     msg: 'OK',
     res: 'this is a test'
   }))
-};
+}

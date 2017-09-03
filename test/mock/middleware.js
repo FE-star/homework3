@@ -3,6 +3,8 @@ function mockFactory (config) {
   return function (req, res, next) {
     if (req.url.indexOf(mockUrl) === 0) {
       const path = req.url.slice(mockUrl.length)
+      console.log('req.method: ', req.method)
+      // console.log('ptah: ', path)
       try {
         // const processor = require(`./processors/${path}`)
         const processor = require(`./${path}`)
