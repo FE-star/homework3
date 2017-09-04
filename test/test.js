@@ -61,8 +61,12 @@ describe('Request', function () {
                 }
                 const req = http.request(options, (resp) => {
                   resp.on('data', (chunk) => {
-                    window.localStorage.setItem('root', JSON.parse(chunk.toString('utf8')).res)
-                    this.resolve(JSON.parse(chunk.toString('utf8')))
+                    const resVal = JSON.parse(chunk.toString('utf8'))
+                    window.localStorage.setItem('root', JSON.stringify({
+                      'timestamp': Date.now(),
+                      'res': resVal.res
+                    }))
+                    this.resolve(resVal)
                   })
                 })
 
@@ -93,7 +97,7 @@ describe('Request', function () {
               .done((res, isFromCache) => {
                 times++
                 if (times === 1) {
-                  assert.deepEqual(res, 'root1 resp')
+                  assert.equal(res.res, 'root1 resp')
                 }
                 if (times === 2) {
                   assert.deepEqual(res, {
@@ -119,8 +123,11 @@ describe('Request', function () {
                 }
                 const req = http.request(options, (resp) => {
                   resp.on('data', (chunk) => {
-                    window.localStorage.setItem('root', JSON.parse(chunk.toString('utf8')).res)
-                    // this.resolve(JSON.parse(chunk.toString('utf8')))
+                    const resVal = JSON.parse(chunk.toString('utf8'))
+                    window.localStorage.setItem('root', JSON.stringify({
+                      'timestamp': Date.now(),
+                      'res': resVal.res
+                    }))
                   })
                 })
 
@@ -130,8 +137,8 @@ describe('Request', function () {
           }
 
           it('a. 第一次请求没有缓存，应该为 null，但请求仍旧发出', function (done) {
-            const aa = new BB('localhost', { pathname: '/root', query: 'id=1' })
-            aa
+            const bb = new BB('localhost', { pathname: '/root', query: 'id=1' })
+            bb
               .get({ lazy: true })
               .done((res) => {
                 // console.log('222AAA: ', res)
@@ -141,13 +148,65 @@ describe('Request', function () {
           })
 
           it('b. 第二次请求有缓存，因此返回数据是第一次请求已发出，但未接收的数据', function (done) {
-            const aaHasCache = new BB('localhost', { pathname: '/root', query: 'id=2' })
-            aaHasCache
+            const bbHasCache = new BB('localhost', { pathname: '/root', query: 'id=2' })
+            bbHasCache
               .get({ lazy: true })
               .done((res) => {
                 // console.log('222BBB: ', res)
-                assert.equal(res, 'root1 resp')
+                assert.equal(res.res, 'root1 resp')
                 window.localStorage.clear()
+                done()
+              })
+          })
+        })
+
+        describe('3. maxAge 策略：缓存里的数据小于maxAge，用缓存，不发请求；否则发请求', function () {
+          class CC extends Request {
+            constructor (url, options) {
+              super(url, options)
+              this.plugin('get', () => {
+                const options = {
+                  url: this.options.url,
+                  path: `${this.options.pathname}?${this.options.query}`
+                }
+                const req = http.request(options, (resp) => {
+                  resp.on('data', (chunk) => {
+                    // window.localStorage.setItem('root', JSON.parse(chunk.toString('utf8')).res)
+                    const resVal = JSON.parse(chunk.toString('utf8'))
+                    window.localStorage.setItem('root', JSON.stringify({
+                      'timestamp': Date.now(),
+                      'res': resVal.res
+                    }))
+                    this.resolve(resVal)
+                  })
+                })
+
+                req.end()
+              })
+            }
+          }
+          it('a. 数据存续小于 maxAge，使用缓存数据，不发出请求', function (done) {
+            window.localStorage.setItem('root', JSON.stringify({
+              'res': 'init value',
+              'timestamp': Date.now()
+            }))
+            const cc = new CC('localhost', { pathname: '/root', query: 'id=1' })
+            cc
+              .get({ maxAge: 10000 })
+              .done((res) => {
+                // console.log('111CCC: ', res)
+                assert.equal(res.res, 'init value')
+                done()
+              })
+          })
+
+          it('b. 否则发出请求，使用请求返回的数据', function (done) {
+            const ccHasCache = new CC('localhost', { pathname: '/root', query: 'id=2' })
+            ccHasCache
+              .get({ maxAge: 100 })
+              .done((res) => {
+                // console.log('222CCC: ', res)
+                assert.equal(res.res, 'root 2 should be updated')
                 done()
               })
           })
