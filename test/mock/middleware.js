@@ -7,7 +7,7 @@ function mockFactory (config) {
       // console.log(req)
       // const path = req.url.slice(mockUrl.length)
       const method = req.method.toLowerCase()
-      console.log(url.parse(req.url))
+      // console.log(url.parse(req.url))
       const urlObj = url.parse(req.url)
       const distNum = urlObj.query.match(/.*?=(\d+)/) ? urlObj.query.match(/.*?=(\d+)/)[1] : ''
       try {

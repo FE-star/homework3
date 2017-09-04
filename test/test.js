@@ -49,18 +49,8 @@ describe('Request', function () {
         assert.throws(req.get, Error, 'lazy and maxAge cannot be defined at the same time')
       })
 
-      // before(function () {
-      //   app.get('/', function (req, res) {
-      //     res.json({
-      //       retcode: 0,
-      //       msg: 'OK',
-      //       res: 'this is a test'
-      //     })
-      //   })
-      // })
-
       describe('可以自定义 GET 请求', function () {
-        it('1. 默认缓存策略: 如果没缓存，成功请求回调一次；如果有缓存,请求成功缓存应当回调两次，', function (done) {
+        describe('1. 默认缓存策略:', function () {
           class AA extends Request {
             constructor (url, options) {
               super(url, options)
@@ -71,14 +61,9 @@ describe('Request', function () {
                 }
                 const req = http.request(options, (resp) => {
                   resp.on('data', (chunk) => {
-                    // console.log('on(data)', chunk.toString('utf8'))
-                    // console.log(this)
+                    window.localStorage.setItem('root', JSON.parse(chunk.toString('utf8')).res)
                     this.resolve(JSON.parse(chunk.toString('utf8')))
                   })
-                })
-
-                req.on('error', e => {
-                  console.log('req.on error: ', e)
                 })
 
                 req.end()
@@ -86,34 +71,40 @@ describe('Request', function () {
             }
           }
 
-          let times = 0
-          // const aa = new AA('localhost', { path: '/root', data: { id: 1 } })
-          const aa = new AA('localhost', { pathname: '/root', query: 'id=1' })
-          aa
-            .get()
-            .done(res => {
-              console.log('done ONE: ', res)
-              window.localStorage.setItem('/root'.replace('/', ''), res.res)
-              assert.deepEqual(res, {
-                retcode: 0,
-                msg: 'OK',
-                res: 'root1 resp'
-              })
-              done()
-            })
-
-          const aaHasCache = new AA('localhost', { pathname: '/root', query: 'id=2' })
-          aaHasCache
-            .get()
-            .done(res => {
-              times++
-              window.localStorage.setItem('/root'.replace('/', ''), res.res)
-              console.log('DONE 22222: ', res)
-              if (times === 2) {
-                console.log('DONE 33333: ', res)
+          it('a. 如果没缓存，成功请求回调一次；', function (done) {
+            const aa = new AA('localhost', { pathname: '/root', query: 'id=1' })
+            aa
+              .get()
+              .done(res => {
+                assert.deepEqual(res, {
+                  retcode: 0,
+                  msg: 'OK',
+                  res: 'root1 resp'
+                })
                 done()
-              }
-            })
+              })
+          })
+
+          it('b. 如果有缓存,请求成功缓存应当回调两次', function (done) {
+            let times = 0
+            const aaHasCache = new AA('localhost', { pathname: '/root', query: 'id=2' })
+            aaHasCache
+              .get()
+              .done((res, isFromCache) => {
+                times++
+                if (times === 1) {
+                  assert.deepEqual(res, 'root1 resp')
+                }
+                if (times === 2) {
+                  assert.deepEqual(res, {
+                    retcode: 0,
+                    msg: 'OK',
+                    res: 'root 2 should be updated'
+                  })
+                  done()
+                }
+              })
+          })
         })
       })
 
