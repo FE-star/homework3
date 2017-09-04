@@ -101,8 +101,54 @@ describe('Request', function () {
                     msg: 'OK',
                     res: 'root 2 should be updated'
                   })
+                  window.localStorage.clear()
                   done()
                 }
+              })
+          })
+        })
+
+        describe('2. lazy 策略：有缓存的情况下直接读取缓存，只有一次回调，但会发出请求', function () {
+          class BB extends Request {
+            constructor (url, options) {
+              super(url, options)
+              this.plugin('get', () => {
+                const options = {
+                  url: this.options.url,
+                  path: `${this.options.pathname}?${this.options.query}`
+                }
+                const req = http.request(options, (resp) => {
+                  resp.on('data', (chunk) => {
+                    window.localStorage.setItem('root', JSON.parse(chunk.toString('utf8')).res)
+                    // this.resolve(JSON.parse(chunk.toString('utf8')))
+                  })
+                })
+
+                req.end()
+              })
+            }
+          }
+
+          it('a. 第一次请求没有缓存，应该为 null，但请求仍旧发出', function (done) {
+            const aa = new BB('localhost', { pathname: '/root', query: 'id=1' })
+            aa
+              .get({ lazy: true })
+              .done((res) => {
+                // console.log('222AAA: ', res)
+                assert.equal(res, null)
+                done()
+              })
+          })
+
+          it('b. 第二次请求有缓存，因此返回数据是第一次请求已发出，但未接收的数据', function (done) {
+            const aaHasCache = new BB('localhost', { pathname: '/root', query: 'id=2' })
+            aaHasCache
+              .get({ lazy: true })
+              .done((res) => {
+                // console.log('222BBB: ', res)
+                assert.equal(res, 'root1 resp')
+                window.localStorage.clear()
+                done()
               })
           })
         })
