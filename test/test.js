@@ -217,9 +217,38 @@ describe('Request', function () {
       //   server.close()
       // })
     })
+
+    describe('POST 请求', function () {
+      it('url 不能为空', function () {
+        const aa = new Request()
+        assert.throws(aa.post, Error, 'url cannot be empty in POST request')
+      })
+
+      it('POST 成功', function (done) {
+        const aa = new Request('localhost', { pathname: '/root', query: 'id=1' })
+        // aa
+        //   .post({ data: 'abc' })
+        //   .done(res => {
+        //     console.log(res)
+        //     done()
+        //   })
+      })
+
+      // why fail
+      // retcode === 1, 登录态丢失
+      // retcode === 2, 客户端请求错误，打印错误 msg
+      // retcode === 3, 服务器错误，打印错误 msg
+      // it('POST 失败', function (done) {
+      // })
+    })
   })
 
   // TODO stuff
+  // 1. 前置一个 judge 插件，判断返回 retcode 是否为 0
+  // 2. catch error
+  // 3. fail 的情形
+  // 4. localStorage 超出存储上限的情形
+  // 5. 前置一个插件机制，让插件机制发现登陆态丢失了就呼起登录框或者执行某个动作
   // describe('边界处理及异常捕获', function () {
 
   // })
