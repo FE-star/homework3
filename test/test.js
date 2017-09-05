@@ -1,7 +1,7 @@
 const Request = require('../lib/request')
 const assert = require('assert')
 const http = require('http')
-// const qs = require('querystring')
+const qs = require('querystring')
 
 describe('Request', function () {
   describe('constructor', function () {
@@ -50,31 +50,36 @@ describe('Request', function () {
       })
 
       describe('可以自定义 GET 请求', function () {
-        describe('1. 默认缓存策略:', function () {
-          class AA extends Request {
-            constructor (url, options) {
-              super(url, options)
-              this.plugin('get', () => {
-                const options = {
-                  url: this.options.url,
-                  path: `${this.options.pathname}?${this.options.query}`
-                }
-                const req = http.request(options, (resp) => {
-                  resp.on('data', (chunk) => {
-                    const resVal = JSON.parse(chunk.toString('utf8'))
+        class AA extends Request {
+          constructor (url, options) {
+            super(url, options)
+            this.plugin('get', () => {
+              const options = {
+                url: this.options.url,
+                path: `${this.options.pathname}?${this.options.query}`
+              }
+              const req = http.request(options, (resp) => {
+                resp.on('data', (chunk) => {
+                  const resVal = JSON.parse(chunk.toString('utf8'))
+                  if (resVal.retcode === 0) {
                     window.localStorage.setItem('root', JSON.stringify({
                       'timestamp': Date.now(),
                       'res': resVal.res
                     }))
                     this.resolve(resVal)
-                  })
+                  }
+
+                  if (resVal.retcode === 2) {
+                    this.reject(resVal)
+                  }
                 })
-
-                req.end()
               })
-            }
-          }
 
+              req.end()
+            })
+          }
+        }
+        describe('1. 默认缓存策略:', function () {
           it('a. 如果没缓存，成功请求回调一次；', function (done) {
             const aa = new AA('localhost', { pathname: '/root', query: 'id=1' })
             aa
@@ -211,6 +216,24 @@ describe('Request', function () {
               })
           })
         })
+
+        it('请求失败，执行 fail 回调', function (done) {
+          const ccShouldFail = new AA('localhost', { pathname: '/root', query: 'id=5' })
+          ccShouldFail
+            .get()
+            .done(res => {
+              // console.log('done cb: ', res)
+              done()
+            })
+            .fail(e => {
+              assert.deepEqual(e, {
+                retcode: 2,
+                msg: '404 not found. please check your url',
+                res: null
+              })
+              done()
+            })
+        })
       })
 
       // after(function () {
@@ -224,31 +247,103 @@ describe('Request', function () {
         assert.throws(aa.post, Error, 'url cannot be empty in POST request')
       })
 
-      it('POST 成功', function (done) {
-        const aa = new Request('localhost', { pathname: '/root', query: 'id=1' })
-        // aa
-        //   .post({ data: 'abc' })
-        //   .done(res => {
-        //     console.log(res)
-        //     done()
-        //   })
+      class MyPost extends Request {
+        constructor (url, options) {
+          super(url, options)
+          this.plugin('post', () => {
+            const postData = qs.stringify(this.options.data)
+            const postOptions = {
+              url: this.options.url,
+              path: `${this.options.pathname}?${this.options.query}`,
+              headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'Content-Length': Buffer.byteLength(postData)
+              },
+              method: this.options.method
+            }
+            const req = http.request(postOptions, (res) => {
+              res.on('data', (chunk) => {
+                // console.log('html res: ', chunk.toString('utf8'))
+                const resObj = JSON.parse(chunk.toString('utf8'))
+                if (resObj.retcode === 0) {
+                  this.resolve(resObj)
+                }
+
+                if (resObj.retcode === 2) {
+                  this.reject(resObj)
+                }
+              })
+            })
+
+            req.on('error', (chunk) => {
+              console.log(chunk.toString('utf8'))
+            })
+
+            req.write(postData)
+            req.end()
+          })
+        }
+      }
+
+      it('POST 成功，retcode === 0', function (done) {
+        const aa = new MyPost('localhost', { pathname: '/root', query: 'id=1' })
+        aa
+          .post({ 'data': { 'key': 'abc', 'sentence': 'Hello my friend!' } })
+          .done(res => {
+            // console.log('my res is; ', res)
+            assert.deepEqual(res, {
+              retcode: 0,
+              msg: 'OK',
+              res: 'post root1 resp'
+            })
+            done()
+          })
       })
 
-      // why fail
-      // retcode === 1, 登录态丢失
       // retcode === 2, 客户端请求错误，打印错误 msg
-      // retcode === 3, 服务器错误，打印错误 msg
-      // it('POST 失败', function (done) {
-      // })
+      it('客户端错误引起的 POST 请求失败，retcode === 2', function (done) {
+        const aa400 = new MyPost('localhost', { pathname: '/root', query: 'id=1' })
+        const aa404 = new MyPost('localhost', { pathname: '/root', query: 'id=2' })
+        aa400
+          .post({ 'data': { 'key': 'abc' } })
+          .done(res => {
+            done()
+          })
+          .fail(e => {
+            // console.log('fail cb 400: ', e)
+            assert.deepEqual(e, {
+              retcode: 2,
+              msg: '400 invalid request, please check your post data',
+              res: null
+            })
+            done()
+          })
+
+        aa404
+          .post({ 'data': { 'key': 'abc', 'sentence': 'Hello my friend!' } })
+          .done(res => {
+            done()
+          })
+          .fail(e => {
+            // console.log('fail cb 404: ', e)
+            assert.deepEqual(e, {
+              retcode: 2,
+              msg: '404 not found. please check your url',
+              res: null
+            })
+            done()
+          })
+      })
+
+      // retcode === 3, 服务器错误，不会模拟
     })
   })
 
   // TODO stuff
   // 1. 前置一个 judge 插件，判断返回 retcode 是否为 0
   // 2. catch error
-  // 3. fail 的情形
   // 4. localStorage 超出存储上限的情形
-  // 5. 前置一个插件机制，让插件机制发现登陆态丢失了就呼起登录框或者执行某个动作
+  // 5. 登录态检验，前置一个插件机制，让插件机制发现登陆态丢失了就呼起登录框或者执行某个动作
   // describe('边界处理及异常捕获', function () {
 
   // })
