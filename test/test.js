@@ -235,10 +235,6 @@ describe('Request', function () {
             })
         })
       })
-
-      // after(function () {
-      //   server.close()
-      // })
     })
 
     describe('POST 请求', function () {
@@ -341,10 +337,49 @@ describe('Request', function () {
 
   // TODO stuff
   // 1. 前置一个 judge 插件，判断返回 retcode 是否为 0
-  // 2. catch error
   // 4. localStorage 超出存储上限的情形
   // 5. 登录态检验，前置一个插件机制，让插件机制发现登陆态丢失了就呼起登录框或者执行某个动作
-  // describe('边界处理及异常捕获', function () {
+  describe('边界处理及异常捕获', function () {
+    class TestErr extends Request {
+      constructor (url, options) {
+        super(url, options)
+        this.plugin('get', () => {
+          console.log(this.options)
+          let httpOpt = {
+            url: this.options.url,
+            path: `${this.options.pathname}?${this.options.query}`
+          }
+          const req = http.request(httpOpt, (res) => {
+            res.on('data', (chunk) => {
+              const resObj = JSON.parse(chunk.toString('utf8'))
+              console.log('res on data: ', resObj)
+              this.resolve(resObj)
+            })
+          })
+          req.end()
+        })
+      }
+    }
 
-  // })
+    // 2. catch error
+    it('should catch error', function (done) {
+      const err1 = new TestErr('localhost', { pathname: '/root', query: 'id=1' })
+      err1
+        .get()
+        .done(res => {
+          // reference err should be caught
+          ddd
+          done()
+        })
+        .fail(e => {
+          done()
+        })
+        .catch(exception => {
+          // console.log('err1 catch cb: ', exception)
+          assert.notEqual(exception, null)
+          assert.equal(exception.toString(), 'ReferenceError: ddd is not defined')
+          done()
+        })
+    })
+  })
 })
