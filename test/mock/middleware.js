@@ -10,7 +10,7 @@ function mockFactory (config) {
       const urlObj = url.parse(req.url)
       const distNum = urlObj.query.match(/.*?=(\d+)/) ? urlObj.query.match(/.*?=(\d+)/)[1] : ''
       try {
-        const processor = require(`./${method}${urlObj.pathname}${distNum}`)
+        const processor = require(`./${method}${urlObj.pathname}/${distNum}`)
         processor(req, res)
       } catch (e) {
         const notFoundHandler = require('./notFoundHandler')
