@@ -333,6 +333,42 @@ describe('Request', function () {
 
       // retcode === 3, 服务器错误，不会模拟
     })
+
+    describe('jsonp 请求', function () {
+      class Jsonp extends Request {
+        constructor (url, options) {
+          super(url, options)
+          this.plugin('jsonp', () => {
+            const httpOpt = {
+              url: this.options.url
+            }
+
+            const req = http.request(httpOpt, (res) => {
+              res.on('data', (chunk) => {
+                const resObj = chunk.toString('utf8')
+                console.log(resObj)
+                if (resObj.retcode === 2) {
+                  this.resolve(resObj)
+                }
+              })
+            })
+          })
+        }
+      }
+      it('reocode 为 0，请求成功', function (done) {
+        const jsp = new Jsonp('localhost', { pathname: 'root', query: 'callback=someHandler' })
+        jsp
+          .jsonp()
+          .done(res => {
+            console.log('json done cb:', res)
+            done()
+          })
+          .fail(e => {
+            console.log('jsp fail cb: ', e)
+            done()
+          })
+      })
+    })
   })
 
   // TODO stuff
