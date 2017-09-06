@@ -5,6 +5,7 @@ class Defer {
         this.errorCbs = [];
         this.catchCbs = [];
         this.params = {};
+        this.method = 'GET';
     }
     fire(cbs, params, flag) {
 
@@ -17,24 +18,45 @@ class Defer {
         })
     }
     get(params) {
+        this.method = 'GET';
         this.params = params;
-        // storage.setItem('res','')
         return this;
     }
-    done(fn) {
-        this.successCbs.push(fn);
-        var storageData = storage.getItem(this.params.url);
-        if(this.params.maxAge){
-            var storageDataObj = JSON.parse(storageData);
+    post(params){
+        this.method = 'POST';
+        this.params = params;
+        return this;
+    }
+    distribution(){
+        try{
+            var storageData = storage.getItem(this.params.url);
+        }catch(e){
+
+        }
+        if (this.params.maxAge) {
+            if (storageData) {
+                var storageDataObj = JSON.parse(storageData);
+                if (new Date().getTime - this.params.maxAge < storageDataObj.time) {
+                    this.resolve(JSON.parse(storageData).res, true);
+                }else{
+                    this.sendAjax();
+                }
+            }
+            return this;
         }
         if (storageData) {
             this.resolve(JSON.parse(storageData).res, true);
         }
-        this.sendAjax();
+        this.sendAjax(storageData);
+    }
+    done(fn) {
+        this.successCbs.push(fn);
+        this.distribution();
         return this;
     }
     fail(fn) {
         this.errorCbs.push(fn);
+        this.distribution();
         return this;
     }
     resolve(params, flag) {
@@ -45,28 +67,32 @@ class Defer {
         this.fire(this.errorCbs, params, flag);
         return this;
     }
-    catch (fn) {
+    catch(fn) {
         this.catchCbs.push(fn);
         return this;
     }
-    sendAjax() {
+    sendAjax(storageData) {
         var that = this;
         $.ajax({
             url: this.params.url,
-            method: 'GET',
+            type: this.method,
             data: this.params.data || {},
-            success: function(res) {
+            success: function (res) {
                 if (res.retcode == 0) {
                     var curTime = new Date().getTime();
-                    storage.setItem(that.params.url, JSON.stringify({res:res,time:curTime}));
-                    if(!that.params.lazy){
+                    if (!that.params.lazy || !storageData) {
                         that.resolve(res, false);
+                    }
+                    try{//避免无痕浏览报错
+                        storage.setItem(that.params.url, JSON.stringify({ res: res, time: curTime }));
+                    }catch(e){
+                        
                     }
                 } else {
                     that.reject(res);
                 }
             },
-            error: function(err) {
+            error: function (err) {
                 that.fire(that.catchCbs, err);
             }
         })

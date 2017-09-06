@@ -1,5 +1,5 @@
-// // const request = require('../')
-// // const xxx = request('http://xxx')
+// const request = require('../')
+// const xxx = request('http://xxx')
     
 // /**
 //  * .get() 调用 GET 请求
