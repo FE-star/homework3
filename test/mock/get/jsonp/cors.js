@@ -1,4 +1,3 @@
 module.exports = function (req, res) {
-  console.log('I am in')
-  res.end("cors('haha, are you ok')")
+  res.end("cors({retcode:0,msg:'OK',res:'cors response here'})")
 }

@@ -35,7 +35,6 @@ describe('Request', function () {
   })
 
   describe('可以定制请求', function () {
-    /*
     describe('GET 请求', function () {
       it('url 不能为空', function () {
         const req1 = new Request()
@@ -334,35 +333,37 @@ describe('Request', function () {
 
       // retcode === 3, 服务器错误，不会模拟
     })
-    */
 
     describe('jsonp 请求', function () {
       class Jsonp extends Request {
         constructor (url, options) {
           super(url, options)
-          // this.plugin('url', () => {
-          //   return `./${this.options.pathname}?${this.options.query}`
-          // })
+
+          this.plugin('url', () => {
+            return `./${this.options.pathname}?${this.options.query}`
+          })
         }
       }
 
       it('reocode 为 0，请求成功', function (done) {
         const jsp = new Jsonp('localhost', { pathname: '/jsonp', query: 'callback=cors' })
-        console.log('++++++++++++++++++++++')
-        console.log(document.getElementsByTagName('head')[0])
-        console.log('=================')
-        console.log(document.getElementById('a1'))
-        done()
-        // jsp
-        //   .jsonp()
-        //   .done(res => {
-        //     console.log('json done cb:', res)
-        //     done()
-        //   })
-        //   .fail(e => {
-        //     console.log('jsp fail cb: ', e)
-        //     done()
-        //   })
+        window.cors = function (data) {
+          if (data.retcode === 0) {
+            jsp.resolve(data)
+          }
+        }
+
+        jsp
+          .jsonp()
+          .done(res => {
+            // console.log('json done cb:', res)
+            assert.deepEqual(res, {
+              retcode: 0,
+              msg: 'OK',
+              res: 'cors response here'
+            })
+            done()
+          })
       })
     })
   })

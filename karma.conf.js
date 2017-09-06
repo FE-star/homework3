@@ -13,8 +13,7 @@ module.exports = function (config) {
 
     // list of files / patterns to load in the browser
     files: [
-      'test/**.js',
-      'lib/context.html'
+      'test/**.js'
     ],
 
     // list of files to exclude
