@@ -17,10 +17,15 @@
   },
   "homepage": "https://github.com/zhengxkq/homework3#readme",
   "devDependencies": {
+    "jquery-mockjax": "^2.2.2",
     "karma": "^1.7.1",
     "karma-chrome-launcher": "^2.2.0",
     "karma-mocha": "^1.3.0",
     "mocha": "^3.5.0",
-    "should": "^11.2.1"
+    "should": "^11.2.1",
+    "sinon": "^3.2.1"
+  },
+  "dependencies": {
+    "jquery": "^3.2.1"
   }
 }
