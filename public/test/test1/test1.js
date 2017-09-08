@@ -2,7 +2,7 @@ const request = require('../../js/XXX')
 /**
  * 默认缓存模式,console.log会显示两遍
  */
-const db = request('http://x.stuq.com:3000/js/dest/dest.js')
+const db = request('http://localhost:9876/js/dest/dest.js')
 	db.get()
 		.done(function(res){
 			// 有缓存应该调用两遍

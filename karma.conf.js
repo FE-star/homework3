@@ -50,9 +50,9 @@ module.exports = function(config) {
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['progress'],
 
-    hostname : 'x.stuq.com',
+    hostname : 'localhost',
     // web server port
-    port: 3000,
+    port: 9876,
 
 
     // enable / disable colors in the output (reporters and logs)

@@ -1,5 +1,5 @@
 const request = require('../../js/XXX')
-const db = request('http://x.stuq.com:3000/js/dest/dest.js')
+const db = request('http://localhost:9876/js/dest/dest.js')
 /**
  * 缓存的最大生命是10s
  */

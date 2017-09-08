@@ -1,7 +1,7 @@
 const request = require('../public/js/XXX')
 const assert = require('assert')
 describe('默认缓存模式测试', function () {
-	const db = request('http://x.stuq.com:3000/base/public/js/dest/dest.js')
+	const db = request('http://localhost:9876/base/public/js/dest/dest.js')
 	let msg1 = {}, msg2 = {}, time = 0
 	before(function(){
 		document.cookie = 'uid=Mr.Right'
@@ -33,7 +33,7 @@ describe('默认缓存模式测试', function () {
 	})
 })
 describe('懒更新缓存模式测试', function () {
-	const db = request('http://x.stuq.com:3000/base/public/js/dest/dest.js')
+	const db = request('http://localhost:9876/base/public/js/dest/dest.js')
 	let msg1 = {}, msg2 = {}, time = 0
 			
 	it('懒缓存模式下第一次和第二次返回数据是一样的', function(done){
@@ -68,7 +68,7 @@ describe('懒更新缓存模式测试', function () {
 	})
 })
 describe('maxAge缓存模式测试', function () {
-	const db = request('http://x.stuq.com:3000/base/public/js/dest/dest.js')
+	const db = request('http://localhost:9876/base/public/js/dest/dest.js')
 	let msg1 = {}, msg2 = {}, msg3 = {}
 
 	before(function(done){
@@ -128,7 +128,7 @@ describe('maxAge缓存模式测试', function () {
 })
 
 describe('撑爆localStorage测试', function () {
-	const db = request(`http://x.stuq.com:3000/base/public/js/dest/dest.js?no=${Date.now()}`)
+	const db = request(`http://localhost:9876/base/public/js/dest/dest.js?no=${Date.now()}`)
 	let msg1 = {}, msg2 = {}, time = 0
 	before(function(){
 		try{
@@ -163,7 +163,7 @@ describe('撑爆localStorage测试', function () {
 	})
 })
 describe('测试登陆台丢失', function () {
-	const db = request(`http://x.stuq.com:3000/base/public/js/dest/dest.js`)
+	const db = request(`http://localhost:9876/base/public/js/dest/dest.js`)
 	let msg1 = {}, msg2 = {}, time = 0
 	before(function(done){
 		var delete_cookie = function(name) {
@@ -197,7 +197,7 @@ describe('测试登陆台丢失', function () {
 
 describe('跨域测试,没有设置JSONP,会报错', function () {
 	it('跨域测试-域名测试', function(done){
-		const db2 = request('http://y.stuq.com:3000/js/dest/dest.js')
+		const db2 = request('http://y.stuq.com:9876/js/dest/dest.js')
 		db2.get()
 			.done(function(res){
 				console.log(res)
@@ -215,7 +215,7 @@ describe('跨域测试,没有设置JSONP,会报错', function () {
 		})
 	})
 	it('跨域测试-协议不同', function(done){
-		const db3 = request('https://x.stuq.com:3000/js/dest/dest.js')
+		const db3 = request('https://localhost:9876/js/dest/dest.js')
 		db3.get()
 			.done(function(res){
 				console.log(res)
@@ -234,7 +234,7 @@ describe('跨域测试,没有设置JSONP,会报错', function () {
 	})
 
 	it('跨域测试-端口不同', function(done){
-		const  db4 = request('http://x.stuq.com:3001/js/dest/dest.js')
+		const  db4 = request('http://localhost:3001/js/dest/dest.js')
 		db4.get()
 			.done(function(res){
 				console.log(res)
@@ -254,7 +254,7 @@ describe('跨域测试,没有设置JSONP,会报错', function () {
 })
 describe('URL测试', function () {
 	it('不是URL,会报错', function(done){
-		const db = request('file://x.stuq.com:3000/js/dest/dest.js')
+		const db = request('file://localhost:9876/js/dest/dest.js')
 		db.get()
 			.done(function(res){
 				console.log(res)
@@ -274,7 +274,7 @@ describe('URL测试', function () {
 })
 describe('Get参数测试', function () {
 	it('Get参数测试', function(done){
-		const db = request('http://x.stuq.com:3000/js/dest/dest.js')
+		const db = request('http://localhost:9876/js/dest/dest.js')
 			db.get({ err: 60000 })
 			.done(function (res) {
 			    console.log(res)

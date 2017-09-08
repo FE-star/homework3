@@ -9,7 +9,7 @@ app.use(async (ctx)=>{
       'uid', 
       'Mr.Right',
       {
-      	domain: 'x.stuq.com',
+      	domain: 'localhost',
         maxAge: 20 * 1000, // cookie有效时长
         httpOnly: false,  // 是否只用于http请求中获取
         overwrite: false  // 是否允许重写
@@ -18,4 +18,4 @@ app.use(async (ctx)=>{
     ctx.body = 'cookie is ok'
 
 })
-app.listen(3000, ()=>{console.log('running')})
+app.listen(9876, ()=>{console.log('running')})

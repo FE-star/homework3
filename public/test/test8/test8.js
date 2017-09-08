@@ -12,7 +12,7 @@ try{
 	console.log('localStorage已经填满')
 }
 
-const db = request(`http://x.stuq.com:3000/js/dest/dest.js?no=${Date.now()}`)
+const db = request(`http://localhost:9876/js/dest/dest.js?no=${Date.now()}`)
 		db.get()
 		.done(function (res) {
 		    console.log(res)

@@ -1,5 +1,5 @@
 const request = require('../../js/XXX')
-const db = request('http://x.stuq.com:3000/js/dest/dest.js')
+const db = request('http://localhost:9876/js/dest/dest.js')
 /**
  * data 参数是请求入参
  * lazy 标记懒更新

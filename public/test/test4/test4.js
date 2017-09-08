@@ -1,5 +1,5 @@
 const request = require('../../js/XXX')
-const db = request('http://x.stuq.com:3000/js/dest/dest.js')
+const db = request('http://localhost:9876/js/dest/dest.js')
 
 /**
  * 登陆台丢失,系统里的uid cookie只存在20秒,20秒之后重新运行会提示登陆台丢失

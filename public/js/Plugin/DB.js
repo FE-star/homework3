@@ -29,7 +29,7 @@ class DB extends Tapable{
 		this.hasStoraged = false
 		this.data =  this.url && this.urlObj["query"] ? this.urlObj["query"] : ''
 		this.pathname =  url && this.urlObj["pathname"] ? this.urlObj["pathname"] : '/'
-		this.port =  this.url && this.urlObj["port"] ? this.urlObj["port"] : 3000
+		this.port =  this.url && this.urlObj["port"] ? this.urlObj["port"] : 9876
 	}
 
 	get(args){
