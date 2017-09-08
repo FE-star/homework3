@@ -3,6 +3,9 @@ const assert = require('assert')
 describe('默认缓存模式测试', function () {
 	const db = request('http://x.stuq.com:3000/base/public/js/dest/dest.js')
 	let msg1 = {}, msg2 = {}, time = 0
+	before(function(){
+		document.cookie = 'uid=Mr.Right'
+	})
 	it('默认缓存模式下,首次访问只会返回一次结果,之后的访问会返回两次数据', function(done){
 		db.get()
 			.done(function(res){

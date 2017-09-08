@@ -1,4 +1,4 @@
-let Tapable = require('./tapable'),
+let Tapable = require('tapable'),
 	urlHandler = require('./checkPlugin/url'),
 	storageHandler = require('./storagePlugin/storageHandler'),
 	checkHandler = require('./checkPlugin/checkHandler'),
