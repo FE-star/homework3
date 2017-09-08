@@ -5,11 +5,6 @@ module.exports = function(config) {
 
     // base path that will be used to resolve all patterns (eg. files, exclude)
     basePath: '',
-    client: {
-      mocha: {
-        timeout : 5000 // 3 seconds - upped from 2 seconds
-      }
-    },
 
     // frameworks to use
     // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
@@ -50,7 +45,7 @@ module.exports = function(config) {
     // available reporters: https://npmjs.org/browse/keyword/karma-reporter
     reporters: ['progress'],
 
-    hostname : 'localhost',
+
     // web server port
     port: 9876,
 
@@ -75,7 +70,7 @@ module.exports = function(config) {
 
     // Continuous Integration mode
     // if true, Karma captures browsers, runs the tests and exits
-    singleRun: false,
+    singleRun: !!process.env.TRAVIS,
 
     // Concurrency level
     // how many browser should be started simultaneous
