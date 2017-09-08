@@ -19,7 +19,7 @@ module.exports = function(config) {
     // list of files / patterns to load in the browser
     files: [
        'test/**.js',
-       { pattern: './public/js/dest/**/*', included: false }
+       { pattern: 'public/js/dest/dest.js', included: false }
     ],
 
 
