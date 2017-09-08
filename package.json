@@ -1,0 +1,70 @@
+{
+  "name": "homework3",
+  "version": "1.0.0",
+  "description": "homework3",
+  "main": "index.js",
+  "scripts": {
+    "test": "karma start",
+    "start": "node index.js",
+    "pretest1": "browserify ./public/test/test1/test1.js>./public/test/test1/bundle.js",
+    "test1": "opn http://x.stuq.com:3000/test/test1/test1.html",
+    "pretest2": "browserify ./public/test/test2/test2.js>./public/test/test2/bundle.js",
+    "test2": "opn http://x.stuq.com:3000/test/test2/test2.html",
+    "pretest3": "browserify ./public/test/test3/test3.js>./public/test/test3/bundle.js",
+    "test3": "opn http://x.stuq.com:3000/test/test3/test3.html",
+    "pretest4": "browserify ./public/test/test4/test4.js>./public/test/test4/bundle.js",
+    "test4": "opn http://x.stuq.com:3000/test/test4/test4.html",
+    "pretest5": "browserify ./public/test/test5/test5.js>./public/test/test5/bundle.js",
+    "test5": "opn http://x.stuq.com:3000/test/test5/test5.html",
+    "pretest6": "browserify ./public/test/test6/test6.js>./public/test/test6/bundle.js",
+    "test6": "opn http://x.stuq.com:3000/test/test6/test6.html",
+    "pretest7": "browserify ./public/test/test7/test7.js>./public/test/test7/bundle.js",
+    "test7": "opn http://x.stuq.com:3000/test/test7/test7.html",
+    "pretest8": "browserify ./public/test/test8/test8.js>./public/test/test8/bundle.js",
+    "test8": "opn http://x.stuq.com:3000/test/test8/test8.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wind4gis/homework3.git"
+  },
+  "keywords": [
+    "homework3"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/wind4gis/homework3/issues"
+  },
+  "homepage": "https://github.com/wind4gis/homework3#readme",
+  "devDependencies": {
+    "babel": "^6.23.0",
+    "babel-polyfill": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-register": "^6.26.0",
+    "babelify": "^7.3.0",
+    "browserify": "^14.4.0",
+    "browserify-istanbul": "^2.0.0",
+    "browserify-shim": "^3.8.14",
+    "karma": "^1.7.1",
+    "karma-babel-preprocessor": "^6.0.1",
+    "karma-browserify": "^5.1.1",
+    "karma-chrome-launcher": "^2.2.0",
+    "karma-cli": "^1.0.1",
+    "karma-es6-shim": "^1.0.0",
+    "karma-mocha": "^1.3.0",
+    "koa": "^2.3.0",
+    "koa-static": "^4.0.1",
+    "mocha": "^3.5.0",
+    "opn": "^5.1.0",
+    "opn-cli": "^3.1.0",
+    "should": "^13.0.1",
+    "tapable": "^0.2.8",
+    "watchify": "^3.9.0",
+    "xmlhttprequest": "^1.8.0"
+  },
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  }
+}
