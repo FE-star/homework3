@@ -22,7 +22,9 @@ module.exports = function(config) {
        { pattern: 'public/js/dest/*.js', watched: false, included: false, served: true, nocache: false }
     ],
 
-
+    proxies: {
+      '/dest.js':'/base/public/js/dest/dest.js'
+    },
     // list of files to exclude
     exclude: [
     ],
