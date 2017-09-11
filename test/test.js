@@ -1,7 +1,7 @@
 const request = require('../public/js/XXX')
 const assert = require('assert')
 describe('默认缓存模式测试', function () {
-	const db = request('http://localhost:9876/base/public/js/dest/dest.js')
+	const db = request('http://localhost:9876/dest/dest.js')
 	let msg1 = {}, msg2 = {}, time = 0
 	before(function(){
 		document.cookie = 'uid=Mr.Right'
@@ -33,7 +33,7 @@ describe('默认缓存模式测试', function () {
 	})
 })
 describe('懒更新缓存模式测试', function () {
-	const db = request('http://localhost:9876/base/public/js/dest/dest.js')
+	const db = request('http://localhost:9876/dest/dest.js')
 	let msg1 = {}, msg2 = {}, time = 0
 			
 	it('懒缓存模式下第一次和第二次返回数据是一样的', function(done){
@@ -68,7 +68,7 @@ describe('懒更新缓存模式测试', function () {
 	})
 })
 describe('maxAge缓存模式测试', function () {
-	const db = request('http://localhost:9876/base/public/js/dest/dest.js')
+	const db = request('http://localhost:9876/dest/dest.js')
 	let msg1 = {}, msg2 = {}, msg3 = {}
 
 	before(function(done){
@@ -128,7 +128,7 @@ describe('maxAge缓存模式测试', function () {
 })
 
 describe('撑爆localStorage测试', function () {
-	const db = request(`http://localhost:9876/base/public/js/dest/dest.js?no=${Date.now()}`)
+	const db = request(`http://localhost:9876/dest/dest.js?no=${Date.now()}`)
 	let msg1 = {}, msg2 = {}, time = 0
 	before(function(){
 		try{
@@ -163,7 +163,7 @@ describe('撑爆localStorage测试', function () {
 	})
 })
 describe('测试登陆台丢失', function () {
-	const db = request(`http://localhost:9876/base/public/js/dest/dest.js`)
+	const db = request(`http://localhost:9876/dest/dest.js`)
 	let msg1 = {}, msg2 = {}, time = 0
 	before(function(done){
 		var delete_cookie = function(name) {
