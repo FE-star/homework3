@@ -7,3 +7,4 @@ addons:
 
 before_install:
   npm install karma-cli -g
+  npm run server
