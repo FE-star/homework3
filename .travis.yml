@@ -10,4 +10,4 @@ before_install:
   - npm install concurrently -g
 
 before_script:
-  - concurrently 'npm run client' 'npm run server'
+  - concurrently 'npm run server' 'npm run test' 
