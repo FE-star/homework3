@@ -6,5 +6,5 @@ addons:
   chrome: "stable"
 
 before_install:
-  npm install karma-cli -g
-  npm run server
+  - npm install karma-cli -g
+  - npm run server
