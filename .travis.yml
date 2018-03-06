@@ -10,3 +10,4 @@ before_install:
 
 before_script:
   - npm run server
+  - npm run test
