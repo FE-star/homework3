@@ -9,7 +9,7 @@ const app = new Koa();
 app.use(route.get("/", function() {
   this.set("Access-Control-Allow-Origin", "*");
   this.body = {
-    retcode: 200,
+    retcode: 0,
     data: { name: "ppap", content: "i have a pen, i have an apple..." },
     msg: "hello word!" 
   };
@@ -17,7 +17,7 @@ app.use(route.get("/", function() {
 app.use(route.get("/test_fail", function() {
   this.set("Access-Control-Allow-Origin", "*");
   this.body = {
-    retcode: 10000,
+    retcode: 1,
     msg: "未登录之类的..."
   }
 }))
